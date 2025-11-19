@@ -1,0 +1,70 @@
+#!/bin/bash
+
+logfile="/var/log/syslog"
+
+count_errors() {
+    echo "Counting ERROR messages..."
+    grep -i "error" "$logfile" | wc -l
+}
+
+count_warnings() {
+    echo "Counting WARNING messages..."
+    grep -i "warning" "$logfile" | wc -l
+}
+
+count_info() {
+    echo "Counting INFO messages..."
+    grep -i "info" "$logfile" | wc -l
+}
+
+view_last_20() {
+    echo "Showing last 20 log entries:"
+    tail -n 20 "$logfile"
+}
+
+search_keyword() {
+    echo "Enter keyword to search:"
+    read key
+    echo "Searching for '$key'..."
+    grep -i "$key" "$logfile"
+}
+
+change_logfile() {
+    echo "Enter full path of log file:"
+    read newfile
+    if [ -f "$newfile" ]
+    then
+        logfile="$newfile"
+        echo "Log file changed to: $logfile"
+    else
+        echo "File does not exist!"
+    fi
+}
+
+while true
+do
+    echo "-----------------------------------"
+    echo "        LOG FILE ANALYZER"
+    echo "-----------------------------------"
+    echo "Current Log File: $logfile"
+    echo "1. Count ERROR Messages"
+    echo "2. Count WARNING Messages"
+    echo "3. Count INFO Messages"
+    echo "4. View Last 20 Log Entries"
+    echo "5. Search Keyword in Log File"
+    echo "6. Change Log File"
+    echo "7. Exit"
+    echo "Enter your choice:"
+    read choice
+
+    case $choice in
+        1) count_errors ;;
+        2) count_warnings ;;
+        3) count_info ;;
+        4) view_last_20 ;;
+        5) search_keyword ;;
+        6) change_logfile ;;
+        7) exit ;;
+        *) echo "Invalid choice!" ;;
+    esac
+done
